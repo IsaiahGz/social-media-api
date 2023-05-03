@@ -1,4 +1,4 @@
-const { User } = require('../models/index');
+const { User, Thought } = require('../models/index');
 
 module.exports = {
 	// Get all users
@@ -61,7 +61,9 @@ module.exports = {
 				res.status(404).send(`No user with the following id: ${req.params.userId}.`);
 				return;
 			}
-			res.json({ message: 'User deleted' }, user);
+			// Delete all thoughts associated with the user
+			const thoughts = await Thought.deleteMany({ username: user.username });
+			res.json({ message: 'User and thoughts deleted.' }, user, thoughts);
 		} catch (err) {
 			res.status(500).send('Error deleting user.');
 			next(err);
