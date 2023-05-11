@@ -70,7 +70,7 @@ module.exports = {
 				res.status(404).json({ message: `No thought with the following id: ${req.params.thoughtId}.` });
 				return;
 			}
-			res.json({ message: 'Thought deleted' }, thought);
+			res.json({ message: 'Thought deleted', thought });
 		} catch (err) {
 			res.status(500).json({ message: 'Error deleting thought.' });
 			next(err);
