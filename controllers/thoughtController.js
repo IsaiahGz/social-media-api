@@ -76,4 +76,37 @@ module.exports = {
 			next(err);
 		}
 	},
+	// Create a reaction
+	async createReaction(req, res, next) {
+		try {
+			const thought = await Thought.findOne({ _id: req.params.thoughtId });
+			if (!thought) {
+				res.status(404).send(`No thought with the following id: ${req.params.thoughtId}.`);
+				return;
+			}
+			thought.reactions.push(req.body);
+			await thought.save();
+			res.json(thought);
+		} catch (err) {
+			res.status(500).send('Error creating reaction.');
+			next(err);
+		}
+	},
+	// Delete a reaction
+	async deleteReaction(req, res, next) {
+		try {
+			const thought = await Thought.findOne({ _id: req.params.thoughtId });
+			if (!thought) {
+				res.status(404).send(`No thought with the following id: ${req.params.thoughtId}.`);
+				return;
+			}
+			// Filter out the reaction that matches the reactionId
+			thought.reactions = thought.reactions.filter((reaction) => reaction.reactionId.toString() !== req.body.reactionId);
+			await thought.save();
+			res.json(thought);
+		} catch (err) {
+			res.status(500).send('Error deleting reaction.');
+			next(err);
+		}
+	},
 };
