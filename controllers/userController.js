@@ -117,7 +117,7 @@ module.exports = {
 			}
 
 			// Remove friendId from user's friend list
-			user.friends = user.friends.filter((id) => id !== req.params.friendId);
+			user.friends = user.friends.filter((id) => id != req.params.friendId);
 			await user.save();
 			res.status(200).json(user);
 		} catch (err) {
