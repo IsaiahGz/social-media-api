@@ -7,7 +7,7 @@ module.exports = {
 			const thoughts = await Thought.find();
 			res.json(thoughts);
 		} catch (err) {
-			res.status(500).send('Error getting thoughts.');
+			res.status(500).json({ message: 'Error getting thoughts.' });
 			next(err);
 		}
 	},
@@ -16,14 +16,14 @@ module.exports = {
 		try {
 			const thought = await Thought.findOne({ _id: req.params.thoughtId });
 			if (!thought) {
-				res.status(404).send(`No thought with the following id: ${req.params.thoughtId}.`);
+				res.status(404).json({ message: `No thought with the following id: ${req.params.thoughtId}.` });
 				return;
 			}
 
 			// Send the thought that was found
 			res.json(thought);
 		} catch (err) {
-			res.status(500).send('Error getting thought.');
+			res.status(500).json({ message: 'Error getting thought.' });
 			next(err);
 		}
 	},
@@ -33,7 +33,7 @@ module.exports = {
 			// Search for user first
 			const user = await User.findOne({ username: req.body.username });
 			if (!user) {
-				res.status(404).send(`No user with the following username found: ${req.body.username}.`);
+				res.status(404).json({ message: `No user with the following username found: ${req.body.username}.` });
 				return;
 			}
 			const thought = await Thought.create(req.body);
@@ -42,7 +42,7 @@ module.exports = {
 			await user.save();
 			res.json(thought);
 		} catch (err) {
-			res.status(500).send('Error creating thought.');
+			res.status(500).json({ message: 'Error creating thought.' });
 			next(err);
 		}
 	},
@@ -51,14 +51,14 @@ module.exports = {
 		try {
 			const thought = await Thought.findOneAndUpdate({ _id: req.params.thoughtId }, { $set: req.body }, { runValidators: true, new: true });
 			if (!thought) {
-				res.status(404).send(`No thought with the following id: ${req.params.thoughtId}.`);
+				res.status(404).json({ message: `No thought with the following id: ${req.params.thoughtId}.` });
 				return;
 			}
 
 			// Found and updated thought. Send back thought with edits
 			res.json(thought);
 		} catch (err) {
-			res.status(500).send('Error updating thought.');
+			res.status(500).json({ message: 'Error updating thought.' });
 			next(err);
 		}
 	},
@@ -67,12 +67,12 @@ module.exports = {
 		try {
 			const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
 			if (!thought) {
-				res.status(404).send(`No thought with the following id: ${req.params.thoughtId}.`);
+				res.status(404).json({ message: `No thought with the following id: ${req.params.thoughtId}.` });
 				return;
 			}
 			res.json({ message: 'Thought deleted' }, thought);
 		} catch (err) {
-			res.status(500).send('Error deleting thought.');
+			res.status(500).json({ message: 'Error deleting thought.' });
 			next(err);
 		}
 	},
@@ -81,14 +81,14 @@ module.exports = {
 		try {
 			const thought = await Thought.findOne({ _id: req.params.thoughtId });
 			if (!thought) {
-				res.status(404).send(`No thought with the following id: ${req.params.thoughtId}.`);
+				res.status(404).json({ message: `No thought with the following id: ${req.params.thoughtId}.` });
 				return;
 			}
 			thought.reactions.push(req.body);
 			await thought.save();
 			res.json(thought);
 		} catch (err) {
-			res.status(500).send('Error creating reaction.');
+			res.status(500).json({ message: 'Error creating reaction.' });
 			next(err);
 		}
 	},
@@ -97,7 +97,7 @@ module.exports = {
 		try {
 			const thought = await Thought.findOne({ _id: req.params.thoughtId });
 			if (!thought) {
-				res.status(404).send(`No thought with the following id: ${req.params.thoughtId}.`);
+				res.status(404).json({ message: `No thought with the following id: ${req.params.thoughtId}.` });
 				return;
 			}
 			// Filter out the reaction that matches the reactionId
@@ -105,7 +105,7 @@ module.exports = {
 			await thought.save();
 			res.json(thought);
 		} catch (err) {
-			res.status(500).send('Error deleting reaction.');
+			res.status(500).json({ message: 'Error deleting reaction.' });
 			next(err);
 		}
 	},

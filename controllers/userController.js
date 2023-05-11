@@ -7,7 +7,7 @@ module.exports = {
 			const users = await User.find();
 			res.json(users);
 		} catch (err) {
-			res.status(500).send('Error getting users.');
+			res.status(500).json({ message: 'Error getting users.' });
 			next(err);
 		}
 	},
@@ -16,14 +16,14 @@ module.exports = {
 		try {
 			const user = await User.findOne({ _id: req.params.userId });
 			if (!user) {
-				res.status(404).send(`No user with the following id: ${req.params.userId}.`);
+				res.status(404).json({ message: `No user with the following id: ${req.params.userId}.` });
 				return;
 			}
 
 			// Send the user that was found
 			res.json(user);
 		} catch (err) {
-			res.status(500).send('Error getting user.');
+			res.status(500).json({ message: 'Error getting user.' });
 			next(err);
 		}
 	},
@@ -33,7 +33,7 @@ module.exports = {
 			const user = await User.create(req.body);
 			res.json(user);
 		} catch (err) {
-			res.status(500).send('Error creating user.');
+			res.status(500).json({ message: 'Error creating user.' });
 			next(err);
 		}
 	},
@@ -42,14 +42,14 @@ module.exports = {
 		try {
 			const user = await User.findOneAndUpdate({ _id: req.params.userId }, { $set: req.body }, { runValidators: true, new: true });
 			if (!user) {
-				res.status(404).send(`No user with the following id: ${req.params.userId}.`);
+				res.status(404).json({ message: `No user with the following id: ${req.params.userId}.` });
 				return;
 			}
 
 			// Found and updated user. Send back user with edits
 			res.json(user);
 		} catch (err) {
-			res.status(500).send('Error updating user.');
+			res.status(500).json({ message: 'Error updating user.' });
 			next(err);
 		}
 	},
@@ -58,14 +58,14 @@ module.exports = {
 		try {
 			const user = await User.findOneAndDelete({ _id: req.params.userId });
 			if (!user) {
-				res.status(404).send(`No user with the following id: ${req.params.userId}.`);
+				res.status(404).json({ message: `No user with the following id: ${req.params.userId}.` });
 				return;
 			}
 			// Delete all thoughts associated with the user
 			const thoughts = await Thought.deleteMany({ username: user.username });
 			res.json({ message: 'User and thoughts deleted.' }, user, thoughts);
 		} catch (err) {
-			res.status(500).send('Error deleting user.');
+			res.status(500).json({ message: 'Error deleting user.' });
 			next(err);
 		}
 	},
@@ -75,19 +75,19 @@ module.exports = {
 		try {
 			// Make sure IDs dont match
 			if (req.params.userId === req.params.friendId) {
-				res.status(400).send(`Can't set friend as own user.`);
+				res.status(400).json({ message: `Can't set friend as own user.` });
 				return;
 			}
 			// Get user by userId
 			const user = await User.findById(req.params.userId);
 			if (!user) {
-				res.status(404).send(`No user with the following id: ${req.params.userId}.`);
+				res.status(404).json({ message: `No user with the following id: ${req.params.userId}.` });
 				return;
 			}
 
 			const friend = await User.findById(req.params.friendId);
 			if (!friend) {
-				res.status(404).send(`No user with the following id: ${req.params.friendId}.`);
+				res.status(404).json({ message: `No user with the following id: ${req.params.friendId}.` });
 				return;
 			}
 
@@ -96,7 +96,7 @@ module.exports = {
 			await user.save();
 			res.status(200).json(user);
 		} catch (err) {
-			res.status(500).send('Error adding friend.');
+			res.status(500).json({ message: 'Error adding friend.' });
 			next(err);
 		}
 	},
@@ -106,13 +106,13 @@ module.exports = {
 		try {
 			// Make sure IDs dont match
 			if (req.params.userId === req.params.friendId) {
-				res.status(400).send(`Can't set friend as own user.`);
+				res.status(400).json({ message: `Can't set friend as own user.` });
 				return;
 			}
 			// Get user by userId
 			const user = await User.findById(req.params.userId);
 			if (!user) {
-				res.status(404).send(`No user with the following id: ${req.params.userId}.`);
+				res.status(404).json({ message: `No user with the following id: ${req.params.userId}.` });
 				return;
 			}
 
@@ -121,7 +121,7 @@ module.exports = {
 			await user.save();
 			res.status(200).json(user);
 		} catch (err) {
-			res.status(500).send('Error adding friend.');
+			res.status(500).json({ message: 'Error removing friend.' });
 			next(err);
 		}
 	},
